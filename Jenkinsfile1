@@ -1,24 +1,38 @@
 pipeline {
     agent any
+
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '2')
-        timeout(1)
+        // Keep only the last 2 builds
+        buildDiscarder(
+            logRotator(
+                artifactDaysToKeepStr: '',
+                artifactNumToKeepStr: '',
+                daysToKeepStr: '',
+                numToKeepStr: '2'
+            )
+        )
+
+        // Set a 1-minute timeout for the pipeline
+        timeout(time: 1, unit: 'MINUTES')
     }
+
     // Check for changes in the SCM every minute
-   triggers {
-       pollSCM '* * * * *'
+    triggers {
+        pollSCM('* * * * *')
     }
-    
+
     stages {
         stage('Run Python Script') {
             steps {
+                // Execute the Python script
                 sh 'python3 view_machine_data.py'
             }
         }
     }
-    
+
     post {
         always {
+            // Clean the workspace after every run
             cleanWs()
         }
     }
