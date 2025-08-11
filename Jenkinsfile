@@ -1,9 +1,9 @@
 pipeline {
     agent any
     // Check for changes in the SCM every minute
-   triggers {
+   /* triggers {
        pollSCM '* * * * *'
-    }
+    } */
     
     stages {
         stage('Run Python Script') {
